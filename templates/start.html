@@ -2,13 +2,12 @@
 
 {% block body_contents %}
 <div class="unswtalk_user_details">
-
+<img src={{url_for('custom_static',filename=img)}}>
 {{student_details}}
 
 </div>
 
 <form method="POST" action="">
-    <input type="hidden" name="n" value="7">
     <input type="submit" value="Next student" class="unswtalk_button">
 </form>
 {% endblock %}

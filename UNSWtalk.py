@@ -5,7 +5,7 @@
 # https://cgi.cse.unsw.edu.au/~cs2041/assignments/UNSWtalk/
 
 import os
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session, send_from_directory, url_for
 
 students_dir = "dataset-medium";
 
@@ -17,14 +17,22 @@ app = Flask(__name__)
 @app.route('/', methods=['GET','POST'])
 @app.route('/start', methods=['GET','POST'])
 def start():
-    n = session.get('n', 0)
+    if 'n' in session:
+        n = session['n']
+    else:
+        n = 0
     students = sorted(os.listdir(students_dir))
     student_to_show = students[n % len(students)]
     details_filename = os.path.join(students_dir, student_to_show, "student.txt")
     with open(details_filename) as f:
         details = f.read()
+    img_path = os.path.join(student_to_show, "img.jpg")
     session['n'] = n + 1
-    return render_template('start.html', student_details=details)
+    return render_template('start.html', student_details=details, img=img_path)
+
+@app.route('/image/<path:filename>')
+def custom_static(filename):
+    return send_from_directory(students_dir, filename)
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
