@@ -1,13 +1,24 @@
 {% extends "base.html" %}
 
 {% block body_contents %}
-<div class="unswtalk_user_details">
-<img src={{url_for('custom_static',filename=img)}}>
-{{student_details}}
 
-</div>
 
-<form method="POST" action="">
-    <input type="submit" value="Next student" class="unswtalk_button">
-</form>
+<div class="card" style="width: 20rem;">
+    <img class="card-img-top" src="{{url_for('custom_static',filename=img)}}" alt="Card image cap">
+    <div class="card-body">
+        <h4 class="card-title">{{session['full_name']}}</h4>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><b>Student ID: </b>{{ session['zid'] }}</li>
+        <li class="list-group-item"><b>Program: </b>{{ session['program'] }}</li>
+        <li class="list-group-item"><b>Birthday: </b>{{ session['birthday'] }}</li>
+        <li class="list-group-item"><b>Home Suburb: </b>{{ session['home_suburb'] }}</li>
+        <li class="list-group-item"><b>Friends: </b>{{ session['friends'] }}</li>
+    <form method="POST" action="">
+        <input type="submit" value="Next student" class="btn btn-primary">
+    </form>
+  </div>
+
+
+
 {% endblock %}
