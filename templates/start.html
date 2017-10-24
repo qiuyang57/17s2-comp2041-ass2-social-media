@@ -1,24 +1,141 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block body_contents %}
 
-{% block body_contents %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default center-block" style="width: 300px;">
+                <img class="img-rounded img-responsive center-block" src="{{url_for('custom_static',filename=img)}}" alt="Card image cap">
+                <div>
+                    <h4 class="text-center">{{session['full_name']}}</h4>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <b>Student ID: </b>{{ session['zid'] }}</li>
+                    <li class="list-group-item">
+                        <b>Program: </b>{{ session['program'] }}</li>
+                    <li class="list-group-item">
+                        <b>Birthday: </b>{{ session['birthday'] }}</li>
+                    <li class="list-group-item">
+                        <b>Home Suburb: </b>{{ session['home_suburb'] }}</li>
+                    <li class="list-group-item">
+                        <b>Friends: </b>{{ session['friends'] }}</li>
+                    {% for key in other_info %}
+                    <li class="list-group-item">
+                        <b>{{ key }}: </b>{{ session[key] }}</li>
+                    {% endfor %}
+                    <form method="POST" action="">
+                        <input type="submit" value="Next student" class="btn btn-primary">
+                    </form>
+            </div>
+        </div>
+        <div class="col-md-7">
 
 
-<div class="card" style="width: 20rem;">
-    <img class="card-img-top" src="{{url_for('custom_static',filename=img)}}" alt="Card image cap">
-    <div class="card-body">
-        <h4 class="card-title">{{session['full_name']}}</h4>
+            <div class="posts">
+                
+                {% for post in posts %}
+                <div class="media">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object img-circle" src="{{url_for('custom_static',filename=post.zid+'/img.jpg')}}" style="width: 64px; height: 64px;">
+                            <!-- <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNWY0ZTZhZmE2OCB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1ZjRlNmFmYTY4Ij48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMy4xNzk2ODc1IiB5PSIzNi41Ij42NHg2NDwvdGV4dD48L2c+PC9nPjwvc3ZnPg=="
+                                data-holder-rendered="true" style="width: 64px; height: 64px;"> -->
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <header class="text-left">
+                                    <div class="comment-user">
+                                        <i class="fa fa-user"></i> {{ post.zid }}</div>
+                                    <time class="comment-date" datetime="{{ post.time }}">
+                                        <i class="fa fa-clock-o"></i> {{ post.time }}</time>
+                                </header>
+                                <div class="comment-post">
+                                    <p>
+                                        {{ post.message|safe }}
+                                    </p>
+                                </div>
+                                <p class="text-right">
+                                    <a href="#" class="btn btn-default btn-sm">
+                                        <i class="fa fa-reply"></i> reply</a>
+                                </p>                                
+                            </div>
+                        </div>
+
+                        {% for comment in post.comments %}
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="#">
+                                    <img class="media-object img-circle" src="{{url_for('custom_static',filename=comment.zid+'/img.jpg')}}" style="width: 64px; height: 64px;">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <header class="text-left">
+                                            <div class="comment-user">
+                                                <i class="fa fa-user"></i> {{ comment.zid }}</div>
+                                            <time class="comment-date" datetime="{{ comment.time }}">
+                                                <i class="fa fa-clock-o"></i> {{ comment.time }}</time>
+                                        </header>
+                                        <div class="comment-post">
+                                            <p>
+                                                {{ comment.message|safe }}
+                                            </p>
+                                        </div>
+                                        <p class="text-right">
+                                            <a href="#" class="btn btn-default btn-sm">
+                                                <i class="fa fa-reply"></i> reply</a>
+                                        </p>                                
+                                    </div>
+                                </div>
+                                {% for reply in comment.replies %}
+                                <div class="media">
+                                    <div class="media-left">
+                                        <a href="#">
+                                            <img class="media-object img-circle" src="{{url_for('custom_static',filename=reply.zid+'/img.jpg')}}" style="width: 64px; height: 64px;">
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="panel panel-default">
+                                            <div class="panel-body">
+                                                <header class="text-left">
+                                                    <div class="comment-user">
+                                                        <i class="fa fa-user"></i> {{ reply.zid }}</div>
+                                                    <time class="comment-date" datetime="{{ reply.time }}">
+                                                        <i class="fa fa-clock-o"></i> {{ reply.time }}</time>
+                                                </header>
+                                                <div class="comment-post">
+                                                    <p>
+                                                        {{ reply.message|safe }}
+                                                    </p>
+                                                </div>
+                                                <p class="text-right">
+                                                    <a href="#" class="btn btn-default btn-sm">
+                                                        <i class="fa fa-reply"></i> reply</a>
+                                                </p>                                
+                                            </div>
+                                        </div>   
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+
+
+
+
+        </div>
+        <div class="col-md-2">.col-md-3</div>
     </div>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item"><b>Student ID: </b>{{ session['zid'] }}</li>
-        <li class="list-group-item"><b>Program: </b>{{ session['program'] }}</li>
-        <li class="list-group-item"><b>Birthday: </b>{{ session['birthday'] }}</li>
-        <li class="list-group-item"><b>Home Suburb: </b>{{ session['home_suburb'] }}</li>
-        <li class="list-group-item"><b>Friends: </b>{{ session['friends'] }}</li>
-    <form method="POST" action="">
-        <input type="submit" value="Next student" class="btn btn-primary">
-    </form>
-  </div>
-
+</div>
 
 
 {% endblock %}

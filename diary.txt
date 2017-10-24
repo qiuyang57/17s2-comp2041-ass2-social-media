@@ -2,3 +2,4 @@
 19/10/17    05:00   05:15   clone code from gitlab to local repository
 23/10/17    19:30   20:36   got image work and keep data-set in a seperate directory
 23/10/17    20:40   23:15   add bootstrap style, hide private information
+24/10/17    12:00   24:00   add data structure to save post data and implement template to display nested posts
