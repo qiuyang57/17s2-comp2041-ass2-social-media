@@ -7,7 +7,7 @@
 import os, re
 import codecs
 from collections import OrderedDict
-from flask import Flask, render_template, session, send_from_directory, request
+from flask import Flask, render_template, session, send_from_directory, request, url_for, redirect
 
 students_dir = "dataset-medium"
 key_hidden = ['email', 'password', 'home_latitude', 'home_longitude', 'courses', 'n']
@@ -384,7 +384,7 @@ def login():
         user = User(zid)
         if user.info_dict['password']==password:
             session['logged_in']=zid
-            return start()
+            return redirect(url_for('start'))
     return render_template('login.html',error='Wrong zid and password combination!')
 
 @app.route('/zid/<friend_zid>', methods=['POST','GET'])
