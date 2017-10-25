@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block body_contents %}
-        <form method="POST" action="/login">
+        <form method="POST" action="{{ url_for('login') }}">
             <input name="zid" placeholder="Username" >
             <input type="password" name="password" placeholder="Password" >
             <input type="submit" value="Login" >

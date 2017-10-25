@@ -20,7 +20,7 @@
                     <li class="list-group-item">
                         <b>{{ key.replace('_',' ').title() }}: </b>{{ user.info_dict[key] }}</li>
                     {% endif %} {% endfor %}
-                    <form method="POST" action="/start">
+                    <form method="POST" action="{{ url_for('start') }}">
                         <input type="submit" value="Next student" class="btn btn-primary">
                     </form>
                 </ul>
