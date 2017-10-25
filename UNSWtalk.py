@@ -4,14 +4,208 @@
 # as a starting point for COMP[29]041 assignment 2
 # https://cgi.cse.unsw.edu.au/~cs2041/assignments/UNSWtalk/
 
-import os, glob
+import os, re
+from collections import OrderedDict
 from flask import Flask, render_template, session, send_from_directory, url_for
 
 students_dir = "dataset-medium";
-key_not_show = ['email','password','home_latitude','home_longitude','courses','n']
-key_in_order = ['full_name','zid', 'program', 'birthday', 'home_suburb', 'friends']
+key_hidden = ['email','password','home_latitude','home_longitude','courses','n']
 
 app = Flask(__name__)
+
+# User class
+class User():
+    def __init__(self, zid):
+        self.zid=zid
+        self.full_name=''
+        self.info_dict = OrderedDict([('program',''),('birthday',''),('home_suburb','')])
+        self.friends = {}
+        # init
+        self.read_user_file()
+        self.posts = self.read_post()
+        
+    
+    # read user posts
+    # input: student zid
+    # return: a list of Post Objects
+    def read_post(self):
+        i = 0
+        posts = []
+        post_path = students_dir+'/'+self.zid+'/'+str(i)+'.txt'
+        while os.path.isfile(post_path):
+            with open(post_path) as f:
+                for line in f.readlines():
+                    key, val = line.split(':', 1)
+                    key = key.strip()
+                    val = val.strip()
+                    longitude=""
+                    latitude=""
+                    if key == 'from':
+                        zid_from = val
+                    elif key == 'time':
+                        time = val
+                    elif key == 'message':
+                        r = '<br />'
+                        val = val.replace('\\n',r)
+                        message = val
+                    elif key == 'longitude':
+                        longitude = val
+                    elif key == 'latitude':
+                        latitude = val
+            post = Post(zid_from, time, message, longitude, latitude)
+            posts.append(post)
+            
+            j = 0
+            comment_path = students_dir+'/'+self.zid+'/'+str(i)+'-'+str(j)+'.txt'
+            while os.path.isfile(comment_path):
+                with open(comment_path) as f:
+                    for line in f.readlines():
+                        key, val = line.split(':', 1)
+                        key = key.strip()
+                        val = val.strip()
+                        if key == 'from':
+                            zid_from = val
+                        elif key == 'time':
+                            time = val
+                        elif key == 'message':
+                            message = val
+                post.insert_comment(zid_from,time,message)
+                comment = post.comments[-1]
+
+                k=0
+                reply_path = students_dir+'/'+self.zid+'/'+str(i)+'-'+str(j)+'-'+str(k)+'.txt'
+                while os.path.isfile(reply_path):
+                    with open(reply_path) as f:
+                        for line in f.readlines():
+                            key, val = line.split(':', 1)
+                            key = key.strip()
+                            val = val.strip()
+                            if key == 'from':
+                                zid_from = val
+                            elif key == 'time':
+                                time = val
+                            elif key == 'message':
+                                message = val
+                    comment.insert_reply(zid_from,time,message)
+                    reply = comment.replies[-1]
+                    k+=1
+                    reply_path = students_dir+'/'+self.zid+'/'+str(i)+'-'+str(j)+'-'+str(k)+'.txt'
+                
+                j+=1
+                comment_path = students_dir+'/'+self.zid+'/'+str(i)+'-'+str(j)+'.txt'
+
+            i += 1
+            post_path = students_dir+'/'+self.zid+'/'+str(i)+'.txt'
+        return posts
+
+    # read user file
+    # and init self.info_dict and self.friends
+    def read_user_file(self):
+        details_filename = os.path.join(students_dir, self.zid, "student.txt")
+        with open(details_filename) as f:
+            details = f.readlines()
+        for line in details:
+            key, val = line.split(':', 1)
+            key = key.strip()
+            val = val.strip()
+            if key != 'zid':
+                if key=='friends':
+                    for friend_zid in val[1:-1].split(','):
+                        friend_zid=friend_zid.strip()
+                        self.friends[friend_zid]=Friend(friend_zid)
+                elif key=='full_name':
+                    self.full_name=val
+                else:
+                    self.info_dict[key]=val
+
+class Friend():
+    def __init__(self, zid):
+        self.zid=zid
+        self.full_name=''
+        self.read_friend_file()
+        self.posts = self.read_friend_post()
+    
+    def read_friend_post(self):
+        i = 0
+        posts = []
+        post_path = students_dir+'/'+self.zid+'/'+str(i)+'.txt'
+        while os.path.isfile(post_path):
+            with open(post_path) as f:
+                for line in f.readlines():
+                    key, val = line.split(':', 1)
+                    key = key.strip()
+                    val = val.strip()
+                    longitude=""
+                    latitude=""
+                    if key == 'from':
+                        zid_from = val
+                    elif key == 'time':
+                        time = val
+                    elif key == 'message':
+                        r = '<br />'
+                        val = val.replace('\\n',r)
+                        message = val
+                    elif key == 'longitude':
+                        longitude = val
+                    elif key == 'latitude':
+                        latitude = val
+            post = Post(zid_from, time, message, longitude, latitude)
+            posts.append(post)
+
+            j = 0
+            comment_path = students_dir+'/'+self.zid+'/'+str(i)+'-'+str(j)+'.txt'
+            while os.path.isfile(comment_path):
+                with open(comment_path) as f:
+                    for line in f.readlines():
+                        key, val = line.split(':', 1)
+                        key = key.strip()
+                        val = val.strip()
+                        if key == 'from':
+                            zid_from = val
+                        elif key == 'time':
+                            time = val
+                        elif key == 'message':
+                            message = val
+                post.insert_comment(zid_from,time,message)
+                comment = post.comments[-1]
+
+                k=0
+                reply_path = students_dir+'/'+self.zid+'/'+str(i)+'-'+str(j)+'-'+str(k)+'.txt'
+                while os.path.isfile(reply_path):
+                    with open(reply_path) as f:
+                        for line in f.readlines():
+                            key, val = line.split(':', 1)
+                            key = key.strip()
+                            val = val.strip()
+                            if key == 'from':
+                                zid_from = val
+                            elif key == 'time':
+                                time = val
+                            elif key == 'message':
+                                message = val
+                    comment.insert_reply(zid_from,time,message)
+                    reply = comment.replies[-1]
+                    k+=1
+                    reply_path = students_dir+'/'+self.zid+'/'+str(i)+'-'+str(j)+'-'+str(k)+'.txt'
+                
+                j+=1
+                comment_path = students_dir+'/'+self.zid+'/'+str(i)+'-'+str(j)+'.txt'
+
+            i += 1
+            post_path = students_dir+'/'+self.zid+'/'+str(i)+'.txt'
+        return posts
+
+    def read_friend_file(self):
+        details_filename = os.path.join(students_dir, self.zid, "student.txt")
+        with open(details_filename) as f:
+            details = f.readlines()
+        for line in details:
+            key, val = line.split(':', 1)
+            key = key.strip()
+            val = val.strip()
+            if key=='full_name':
+                self.full_name=val
+
 
 class Post():
     def __init__(self, zid, time, message, longitude='', latitude=''):
@@ -41,14 +235,9 @@ class Reply():
         self.time = time
         self.message = message
 
-
-# read user posts
-# input: student zid
-# return: a list of Post Objects
-def read_post(zid):
+def read_post(self, zid):
     i = 0
     posts = []
-    print(zid)
     post_path = students_dir+'/'+zid+'/'+str(i)+'.txt'
     while os.path.isfile(post_path):
         with open(post_path) as f:
@@ -126,7 +315,7 @@ def read_user_file(student_to_show):
     for line in details:
         key, val = line.split(':', 1)
         session[key] = val
-    
+   
 # Show unformatted details for student "n"
 # Increment n and store it in the session cookie
 
@@ -139,19 +328,16 @@ def start():
         n = 0
     students = sorted(os.listdir(students_dir))
     student_to_show = students[n % len(students)]
-    read_user_file(student_to_show)
-    posts = read_post(student_to_show)
-    print(posts)
+    user = User(student_to_show)
+    # read_user_file(student_to_show)
+    # posts = read_post(student_to_show)
+    print(user.posts)
     img_path = os.path.join(student_to_show, "img.jpg")
     session['n'] = n + 1
 
-    other_info = []
-    for key in session:
-        if key not in key_in_order and key not in key_not_show:
-            other_info.append(key)
     return render_template('start.html',
-                            other_info=other_info,
-                            posts=posts,
+                            key_hidden=key_hidden,
+                            user=user,
                             img=img_path)
 
 @app.route('/image/<path:filename>')
