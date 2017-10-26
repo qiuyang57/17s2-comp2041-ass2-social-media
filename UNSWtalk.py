@@ -5,13 +5,13 @@
 # https://cgi.cse.unsw.edu.au/~cs2041/assignments/UNSWtalk/
 
 import os, re
-import codecs
 from collections import OrderedDict
 from flask import Flask, render_template, session, send_from_directory, request, url_for, redirect
 
 students_dir = "dataset-medium"
 key_hidden = ['email', 'password', 'home_latitude', 'home_longitude', 'courses', 'n']
 check_icon = set()
+zid_name_dict={}
 
 app = Flask(__name__)
 
@@ -228,6 +228,22 @@ class Post:
         self.longitude = longitude
         self.latitude = latitude
         self.comments = []
+        self.full_name=""
+        self._name_init()
+
+    def _name_init(self):
+        if self.zid not in zid_name_dict:
+            with open(students_dir+'/'+self.zid+'/student.txt', encoding="utf8") as f:
+                for line in f.readlines():
+                    key, val = line.split(':', 1)
+                    key = key.strip()
+                    val = val.strip()
+                    if key == 'full_name':
+                        self.full_name = val
+                        zid_name_dict[self.zid] = self.full_name
+        else:
+            self.full_name=zid_name_dict[self.zid]
+
 
     def insert_comment(self, zid, time, message=""):
         self.comments.append(Comment(zid, time, message))
@@ -243,6 +259,21 @@ class Comment:
         else:
             self.have_icon = False
         self.replies = []
+        self.full_name=""
+        self._name_init()
+
+    def _name_init(self):
+        if self.zid not in zid_name_dict:
+            with open(students_dir+'/'+self.zid+'/student.txt', encoding="utf8") as f:
+                for line in f.readlines():
+                    key, val = line.split(':', 1)
+                    key = key.strip()
+                    val = val.strip()
+                    if key == 'full_name':
+                        self.full_name = val
+                        zid_name_dict[self.zid]=self.full_name
+        else:
+            self.full_name=zid_name_dict[self.zid]
 
     def insert_reply(self, zid, time, message=""):
         self.replies.append(Reply(zid, time, message))
@@ -257,7 +288,21 @@ class Reply:
             self.have_icon = True
         else:
             self.have_icon = False
+        self.full_name=""
+        self._name_init()
 
+    def _name_init(self):
+        if self.zid not in zid_name_dict:
+            with open(students_dir+'/'+self.zid+'/student.txt', encoding="utf8") as f:
+                for line in f.readlines():
+                    key, val = line.split(':', 1)
+                    key = key.strip()
+                    val = val.strip()
+                    if key == 'full_name':
+                        self.full_name = val
+                        zid_name_dict[self.zid] = self.full_name
+        else:
+            self.full_name=zid_name_dict[self.zid]
 
 def read_post(zid):
     i = 0
@@ -349,8 +394,8 @@ def have_icon(zid):
 # Increment n and store it in the session cookie
 
 @app.route('/', methods=['GET', 'POST'])
-@app.route('/start', methods=['GET', 'POST'])
-def start():
+@app.route('/home', methods=['GET', 'POST'])
+def home():
     # if 'n' in session:
     #     n = session['n']
     # else:
@@ -384,8 +429,16 @@ def login():
         user = User(zid)
         if user.info_dict['password']==password:
             session['logged_in']=zid
-            return redirect(url_for('start'))
+            session['full_name']=user.full_name
+            return redirect(url_for('home'))
     return render_template('login.html',error='Wrong zid and password combination!')
+
+@app.route('/logout')
+def logout():
+    if 'logged_in' in session:
+        session.pop('logged_in')
+        session.pop('full_name')
+    return render_template('login.html',error='')
 
 @app.route('/zid/<friend_zid>', methods=['POST','GET'])
 def friends_page(friend_zid):

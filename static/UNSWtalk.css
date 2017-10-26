@@ -8,8 +8,9 @@
  * You will probably want to add  CSS to this file too
  */
 
+
  /* https://bootsnipp.com/snippets/zD02X by davkhun */
- .comment-list .row {
+.comment-list .row {
   margin-bottom: 0px;
 }
 .comment-list .panel .panel-heading {
@@ -35,6 +36,7 @@
 }
 /* Portrait tablets and medium desktops */
 @media (min-width: 768px) {
+
   .comment-list .arrow:after, .comment-list .arrow:before {
     content: "";
     position: absolute;
@@ -84,6 +86,9 @@
 .comment-list .comment-post {
   margin-top: 6px;
 }
+
+
+
 
 
 

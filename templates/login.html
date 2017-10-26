@@ -1,8 +1,27 @@
-{% extends "base.html" %} {% block body_contents %}
-        <form method="POST" action="{{ url_for('login') }}">
-            <input name="zid" placeholder="Username" >
-            <input type="password" name="password" placeholder="Password" >
-            <input type="submit" value="Login" >
-        </form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Unswtalk</title>
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{url_for('static',filename='UNSWtalk.css')}}">
+
+</head>
+<body>
+<div class="jumbotron">
+    <h1 class="display-3">UNSWtalk</h1>
+</div>
+<form method="POST" action="{{ url_for('login') }}">
+    <input name="zid" placeholder="Username" >
+    <input type="password" name="password" placeholder="Password" >
+    <input type="submit" value="Login" >
+</form>
 {{ error }}
-{% endblock %}
+
+</body>
+</html>

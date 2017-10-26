@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block body_contents %}
+{% extends 'base.html' %} {% block body_contents %}
 
 <div class="container-fluid">
     <div class="row">
@@ -20,7 +20,7 @@
                     <li class="list-group-item">
                         <b>{{ key.replace('_',' ').title() }}: </b>{{ user.info_dict[key] }}</li>
                     {% endif %} {% endfor %}
-                    <form method="POST" action="{{ url_for('start') }}">
+                    <form method="POST" action="{{ url_for('home') }}">
                         <input type="submit" value="Next student" class="btn btn-primary">
                     </form>
                 </ul>
@@ -34,7 +34,7 @@
                 {% for post in user.posts %}
                 <div class="media">
                     <div class="media-left">
-                        <a href="#">
+                        <a href="{{ url_for('friends_page',friend_zid=post.zid) }}">
                         {% if post.have_icon %}
                             <img class="media-object img-circle" src="{{url_for('custom_static',filename=post.zid+'/img.jpg')}}" style="width: 64px; height: 64px;">
                         {% else %}
@@ -49,7 +49,8 @@
                             <div class="panel-body">
                                 <header class="text-left">
                                     <div class="comment-user">
-                                        <i class="fa fa-user"></i> {{ post.zid }}</div>
+                                        <i class="fa fa-user"></i> <a href="{{ url_for('friends_page',friend_zid=post.zid) }}">{{ post.full_name }}</a>
+                                    </div>
                                     <time class="comment-date" datetime="{{ post.time }}">
                                         <i class="fa fa-clock-o"></i> {{ post.time }}</time>
                                 </header>
@@ -68,7 +69,7 @@
                         {% for comment in post.comments %}
                         <div class="media">
                             <div class="media-left">
-                                <a href="#">
+                                <a href="{{ url_for('friends_page',friend_zid=comment.zid) }}">
                                 {% if comment.have_icon %}
                                     <img class="media-object img-circle" src="{{url_for('custom_static',filename=comment.zid+'/img.jpg')}}" style="width: 64px; height: 64px;">
                                 {% else %}
@@ -82,7 +83,8 @@
                                     <div class="panel-body">
                                         <header class="text-left">
                                             <div class="comment-user">
-                                                <i class="fa fa-user"></i> {{ comment.zid }}</div>
+                                                <i class="fa fa-user"></i> <a href="{{ url_for('friends_page',friend_zid=comment.zid) }}">{{ comment.full_name }}</a>
+                                            </div>
                                             <time class="comment-date" datetime="{{ comment.time }}">
                                                 <i class="fa fa-clock-o"></i> {{ comment.time }}</time>
                                         </header>
@@ -100,7 +102,7 @@
                                 {% for reply in comment.replies %}
                                 <div class="media">
                                     <div class="media-left">
-                                        <a href="#">
+                                        <a href="{{ url_for('friends_page',friend_zid=reply.zid) }}">
                                         {% if reply.have_icon %}
                                             <img class="media-object img-circle" src="{{url_for('custom_static',filename=reply.zid+'/img.jpg')}}" style="width: 64px; height: 64px;">
                                         {% else %}
@@ -114,7 +116,8 @@
                                             <div class="panel-body">
                                                 <header class="text-left">
                                                     <div class="comment-user">
-                                                        <i class="fa fa-user"></i> {{ reply.zid }}</div>
+                                                        <i class="fa fa-user"></i> <a href="{{ url_for('friends_page',friend_zid=reply.zid) }}">{{ reply.full_name }}</a>
+                                                    </div>
                                                     <time class="comment-date" datetime="{{ reply.time }}">
                                                         <i class="fa fa-clock-o"></i> {{ reply.time }}</time>
                                                 </header>
@@ -151,7 +154,7 @@
                 {% for zid in user.friends %}
                 <div class="media">
                     <div class="media-left">
-                        <a href="#">
+                        <a href="{{ url_for('friends_page',friend_zid=zid) }}">
                         {% if user.friends[zid].have_icon %}
                             <img class="media-object img-circle" src="{{url_for('custom_static',filename=zid+'/img.jpg')}}" style="width: 64px; height: 64px;">
                         {% else %}
@@ -161,7 +164,9 @@
                         </a>
                     </div>
                     <div class="media-body">
+                        <a href="{{ url_for('friends_page',friend_zid=zid) }}">
                         {{ user.friends[zid].full_name}}
+                        </a>
                     </div>
                 </div>
                 {% endfor %}   
@@ -171,4 +176,4 @@
 </div>
 
 
-{% endblock %}
+{% endblock body_contents %}
