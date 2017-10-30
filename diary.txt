@@ -7,3 +7,4 @@
 26/10/17    00:00   02:30   add log in, add friend page
 26/10/17    13:00   20:00   add log out, add link to others page, add top navbar
 30/10/17    14:00   24:00   add a sqlite DB init which reads data from orginal source and insert, add a DB schema
+31/10/17    01:00   05:00   change view to match db
