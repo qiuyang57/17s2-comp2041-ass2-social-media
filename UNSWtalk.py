@@ -304,85 +304,10 @@ class Reply:
         else:
             self.full_name=zid_name_dict[self.zid]
 
-def read_post(zid):
-    i = 0
-    posts = []
-    post_path = students_dir + '/' + zid + '/' + str(i) + '.txt'
-    while os.path.isfile(post_path):
-        with open(post_path, encoding="utf8") as f:
-            for line in f.readlines():
-                key, val = line.split(':', 1)
-                key = key.strip()
-                val = val.strip()
-                longitude = ""
-                latitude = ""
-                if key == 'from':
-                    zid_from = val
-                elif key == 'time':
-                    time = val
-                elif key == 'message':
-                    r = '<br />'
-                    val = val.replace('\\n', r)
-                    message = val
-                elif key == 'longitude':
-                    longitude = val
-                elif key == 'latitude':
-                    latitude = val
-        post = Post(zid_from, time, message, longitude, latitude)
-        posts.append(post)
-
-        j = 0
-        comment_path = students_dir + '/' + zid + '/' + str(i) + '-' + str(j) + '.txt'
-        while os.path.isfile(comment_path):
-            with open(comment_path, encoding="utf8") as f:
-                for line in f.readlines():
-                    key, val = line.split(':', 1)
-                    key = key.strip()
-                    val = val.strip()
-                    if key == 'from':
-                        zid_from = val
-                    elif key == 'time':
-                        time = val
-                    elif key == 'message':
-                        message = val
-            post.insert_comment(zid_from, time, message)
-            comment = post.comments[-1]
-
-            k = 0
-            reply_path = students_dir + '/' + zid + '/' + str(i) + '-' + str(j) + '-' + str(k) + '.txt'
-            while os.path.isfile(reply_path):
-                with open(reply_path, encoding="utf8") as f:
-                    for line in f.readlines():
-                        key, val = line.split(':', 1)
-                        key = key.strip()
-                        val = val.strip()
-                        if key == 'from':
-                            zid_from = val
-                        elif key == 'time':
-                            time = val
-                        elif key == 'message':
-                            message = val
-                comment.insert_reply(zid_from, time, message)
-                k += 1
-                reply_path = students_dir + '/' + zid + '/' + str(i) + '-' + str(j) + '-' + str(k) + '.txt'
-
-            j += 1
-            comment_path = students_dir + '/' + zid + '/' + str(i) + '-' + str(j) + '.txt'
-
-        i += 1
-        post_path = students_dir + '/' + zid + '/' + str(i) + '.txt'
-    return posts
 
 
 # read user file
 # save it in session
-def read_user_file(student_to_show):
-    details_filename = os.path.join(students_dir, student_to_show, "student.txt")
-    with open(details_filename, encoding="utf8") as f:
-        details = f.readlines()
-    for line in details:
-        key, val = line.split(':', 1)
-        session[key] = val
 
 def have_icon(zid):
     if os.path.isfile(students_dir + '/' + zid + '/img.jpg'):
