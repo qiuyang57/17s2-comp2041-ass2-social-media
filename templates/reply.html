@@ -1,0 +1,77 @@
+{% extends 'base.html' %} {% block body_contents %}
+
+    <div class="media">
+        <div class="media-left">
+            <a href="{{ url_for('profile_page',profile_zid=post.zid) }}">
+                {% if post.zid in user_object_dict and user_object_dict[post.zid].have_icon %}
+                    <img class="media-object img-circle"
+                         src="{{ url_for('custom_static',filename=post.zid+'/img.jpg') }}"
+                         style="width: 64px; height: 64px;">
+                {% else %}
+                    <img class="media-object img-circle"
+                         src="{{ url_for('static',filename='empty_icon.jpg') }}"
+                         style="width: 64px; height: 64px;" alt="Empty Icon">
+                {% endif %}
+                <!-- <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNWY0ZTZhZmE2OCB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1ZjRlNmFmYTY4Ij48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMy4xNzk2ODc1IiB5PSIzNi41Ij42NHg2NDwvdGV4dD48L2c+PC9nPjwvc3ZnPg=="
+                    data-holder-rendered="true" style="width: 64px; height: 64px;"> -->
+            </a>
+        </div>
+        <div class="media-body">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <header class="text-left">
+                        <div class="comment-user">
+                            <i class="fa fa-user"></i> <a
+                                href="{{ url_for('profile_page',profile_zid=post.zid) }}">{{ post.full_name }}</a>
+                        </div>
+                        <time class="comment-date" datetime="{{ post.time }}">
+                            <i class="fa fa-clock-o"></i> {{ post.time }}</time>
+                    </header>
+                    <div class="comment-post">
+                        <p>
+                            {{ post.show_message()|safe }}
+                        </p>
+                    </div>
+                    <p class="text-right">
+                        <a href="{{ url_for('home') }}"
+                           class="btn btn-default btn-sm">
+                            <i class="fa fa-reply"></i> Back</a>
+                    </p>
+                </div>
+            </div>
+            <div id="new_post" class="box_top">
+                <form class="post_form" action="/post" method="post">
+                            <textarea id="new_post_text" class="form-control" rows="3" name="message"
+                                      placeholder="What's on your mind?"></textarea>
+
+                    <button type="submit" class="btn btn-primary new_post_button"><strong>Post</strong></button>
+                    <div class="dropdown new_post_button">
+                        <button id="new_post_privacy" type="button"
+                                class="btn btn-default btn-sm dropdown-toggle"
+                                data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                            <i class="fa fa-globe" aria-hidden="true"></i>
+                            <span id="new_post_privacy_text">Public </span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li class="dropdown-header">Who can see this?</li>
+                            <li>
+                                <a data-privacy="public" href="#">
+                                    <i class="fa fa-globe" aria-hidden="true"></i> Public
+                                </a>
+                            </li>
+                            <li><a data-privacy="friends" href="#"><i class="fa fa-users"
+                                                                      aria-hidden="true"></i> Friends</a></li>
+                            <li><a data-privacy="onlyme" href="#"><i class="fa fa-user" aria-hidden="true"></i>
+                                Only Me</a></li>
+                        </ul>
+                    </div>
+                    <input id="new_post_privacy_input" type="hidden" name="post_privacy" value="public">
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock body_contents %}
